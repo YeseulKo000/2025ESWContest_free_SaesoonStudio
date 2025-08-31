@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트팜 센서 데이터</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td { 
+            border: 1px solid #e0e0e0; 
+            padding: 12px 15px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #4CAF50; 
+            color: white; 
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) { 
+            background-color: #f9f9f9; 
+        }
+        tr:hover { 
+            background-color: #f1f1f1; 
+            transition: background-color 0.3s ease;
+        }
+        p {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+        }
+        .badge { padding: 4px 8px; border-radius: 6px; font-weight: 600; display: inline-block; }
+        .badge-good { background:#e6ffed; border:1px solid #b7f5c9; }
+        .badge-warn { background:#fff7e6; border:1px solid #ffd48a; }
+        .badge-bad  { background:#ffecec; border:1px solid #ffa8a8; }
+    </style>
+</head>
+<body>
+    <h1>스마트팜 센서 데이터 현황</h1>
+
+    {% if sensor_data %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>타임스탬프</th>
+                <th>흙 습도</th>
+                <th>공기 온도 (°C)</th>
+                <th>공기 습도 (%)</th>
+                <th>빛 세기</th>
+                <th>수위</th>
+                <th>종합 점수</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in sensor_data %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.soil_moisture | default('N/A') | round(1) }}</td>
+                <td>{{ row.air_temperature | default('N/A') | round(1) }}</td>
+                <td>{{ row.air_humidity | default('N/A') | round(1) }}</td>
+                <td>{{ row.light_intensity | default('N/A') | round(1) }}</td>
+                <td>{{ row.water_level | default('N/A') | round(1) }}</td>
+                <td>
+                    {% set s = row.composite_score %}
+                    {% if s is not none %}
+                        {% if s >= 80 %}
+                            <span class="badge badge-good">{{ s|round(1) }}</span>
+                        {% elif s >= 50 %}
+                            <span class="badge badge-warn">{{ s|round(1) }}</span>
+                        {% else %}
+                            <span class="badge badge-bad">{{ s|round(1) }}</span>
+                        {% endif %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>아직 센서 데이터가 없습니다.</p>
+    {% endif %}
+
+</body>
+</html>

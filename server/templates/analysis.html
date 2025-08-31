@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 분석 결과</title>
+    <style>
+        /* (index.html과 동일한 스타일) */
+        body { font-family: sans-serif; margin: 2em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>🍓 AI 이미지 분석 기록 🍓</h1>
+    <p><a href="/">센서 데이터 보러가기</a></p>
+    <table>
+        <thead>
+            <tr>
+                <th>분석 시간</th>
+                <th>딸기 상태</th>
+                <th>신뢰도 점수</th>
+                <th>발견된 꽃 개수</th>
+                </tr>
+        </thead>
+        <tbody>
+            {% for row in analysis_data %}
+            <tr>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.ripeness_text }}</td>
+                <td>{{ row.ripeness_score }}</td>
+                <td>{{ row.flower_count }}</td>
+                </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">아직 분석된 데이터가 없습니다.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
